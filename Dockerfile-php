@@ -1,0 +1,35 @@
+# PHP Container
+FROM php:8.1-fpm
+
+RUN apt-get update && apt-get install -y \
+    git \
+    libzip-dev \
+    unzip \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
+
+# work folder
+WORKDIR /var/www/html
+
+# Copy the Laravel source code into the container
+COPY . .
+
+# Install Composer dependencies
+RUN curl -sS https://getcomposer.org/installer | /usr/local/bin/php -- --install-dir=/usr/local/bin --filename=composer
+RUN /usr/local/bin/composer install --no-interaction
+
+# Copy the .env file into the container
+COPY .env.example .env
+
+COPY vendor /vendor
+
+RUN php artisan key:generate
+
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    chown -R www-data:www-data /var/www/html/storage
+   
+
+# Start the PHP web server
+CMD ["php", "artisan", "serve", "--host=0.0.0.0"]

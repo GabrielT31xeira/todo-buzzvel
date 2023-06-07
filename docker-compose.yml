@@ -1,0 +1,47 @@
+version: '3'
+services:
+    # Creation of the Laravel container
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile-php
+      container_name: bulzzvel-backend
+      user: "${USER_ID}:${GROUP_ID}"
+      volumes:
+        - "./app:/var/www/html/app"
+        - "./config:/var/www/html/config"
+        - "./database:/var/www/html/database"
+        - "./resources:/var/www/html/resources"
+        - "./routes:/var/www/html/routes"
+        - "./composer.json:/var/www/html/composer.json"
+        - "./composer.lock:/var/www/html/composer.lock"
+      environment:
+        - "DB_HOST=db_bulzzvel"
+        - "DB_PORT=3306"
+        - "DB_DATABASE=bulzzvel_db"
+        - "DB_USERNAME=bulzzvel@2023"
+        - "DB_PASSWORD=bulzzvel@120"
+      ports:
+        - "8000:8000"
+      depends_on: 
+        - bulzzvel_db
+      networks:
+        - bulzzvel_net
+
+    # Creation of the database container    
+    bulzzvel_db:
+      image: mariadb:10.6
+      restart: always
+      container_name: bulzzvel_db
+      ports:
+        - "3313:3306"
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: ${DB_DATABASE}
+        MYSQL_USER: ${DB_USERNAME}
+        MYSQL_PASSWORD: ${DB_PASSWORD}
+      networks:
+        - bulzzvel_net
+
+networks:
+  bulzzvel_net:
