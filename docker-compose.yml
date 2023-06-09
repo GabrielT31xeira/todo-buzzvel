@@ -23,12 +23,12 @@ services:
         - "DB_PASSWORD=bulzzvel@120"
       ports:
         - "8000:8000"
-      depends_on: 
+      depends_on:
         - bulzzvel_db
       networks:
         - bulzzvel_net
 
-    # Creation of the database container    
+    # Creation of the database container
     bulzzvel_db:
       image: mariadb:10.6
       restart: always

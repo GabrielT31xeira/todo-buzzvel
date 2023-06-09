@@ -21,15 +21,13 @@ RUN /usr/local/bin/composer install --no-interaction
 # Copy the .env file into the container
 COPY .env.example .env
 
-COPY vendor /vendor
-
 RUN php artisan key:generate
 
 RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
     chown -R www-data:www-data /var/www/html/storage
-   
+
 
 # Start the PHP web server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0"]
