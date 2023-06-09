@@ -16,14 +16,10 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->boolean('completed');
-            $table->date('completed_date')->nullable();
-            $table->date('deleted_date')->nullable();
+            $table->date('completed_at')->nullable();
             $table->timestamps();
             // Foreing keys
-            $table->unsignedBigInteger('files_id');
-            $table->foreign('files_id')->references('id')->on('files');
-
-            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users');
 
             $table->unsignedBigInteger('updated_by')->nullable();
