@@ -16,9 +16,9 @@ services:
         - "./composer.json:/var/www/html/composer.json"
         - "./composer.lock:/var/www/html/composer.lock"
       environment:
-        - "DB_HOST=db_bulzzvel"
+        - "DB_HOST=bulzzvel_db"
         - "DB_PORT=3306"
-        - "DB_DATABASE=bulzzvel_db"
+        - "DB_DATABASE=bulzzvel"
         - "DB_USERNAME=bulzzvel@2023"
         - "DB_PASSWORD=bulzzvel@120"
       ports:
@@ -30,16 +30,16 @@ services:
 
     # Creation of the database container
     bulzzvel_db:
-      image: mariadb:10.6
+      image: mysql:latest
       restart: always
       container_name: bulzzvel_db
       ports:
         - "3313:3306"
       environment:
         MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: ${DB_DATABASE}
-        MYSQL_USER: ${DB_USERNAME}
-        MYSQL_PASSWORD: ${DB_PASSWORD}
+        MYSQL_DATABASE: bulzzvel
+        MYSQL_USER: bulzzvel@2023
+        MYSQL_PASSWORD: bulzzvel@120
       networks:
         - bulzzvel_net
 
