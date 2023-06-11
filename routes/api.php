@@ -25,3 +25,7 @@ Route::get('/task/{id}', [\App\Http\Controllers\TaskController::class, 'show'])-
 Route::put('/task/{id}', [\App\Http\Controllers\TaskController::class, 'update'])->middleware('auth:sanctum');
 Route::post('/task', [\App\Http\Controllers\TaskController::class, 'store'])->middleware('auth:sanctum');
 Route::delete('/task/{id}', [\App\Http\Controllers\TaskController::class, 'delete'])->middleware('auth:sanctum');
+
+Route::fallback(function () {
+    return response()->json(['message' => 'Route not found'], 404);
+});

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->longBlob('pdf');
+            $table->binary('pdf')->nullable();
             //Foreing key
             $table->unsignedBigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('task');

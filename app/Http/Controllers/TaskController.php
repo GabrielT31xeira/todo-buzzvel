@@ -7,24 +7,30 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
     public function index()
     {
         $tasks = Task::with('creator', 'updater', 'files')->get();
-        return response()->json(['message' => 'Task list', 'task' => $tasks]);
+        return response()->json(['message' => 'Task list', 'tasks' => $tasks], 200);
     }
 
     public function store(Request $req)
     {
-        $req->validate([
-            'title' => 'required',
+        $validate = Validator::make($req->all(),[
+            'title' => 'required|unique:task',
             'description' => 'required',
-            'pdf' => 'required'
+            'pdf.*' => ['max:20000']
         ]);
 
+        if ($validate->fails()) {
+            return response()->json(['error' => $validate->errors()], 422);
+        }
+
         DB::beginTransaction();
+
         try {
             $user = Auth::user();
             $task = new Task;
@@ -34,7 +40,6 @@ class TaskController extends Controller
             $task->created_by = $user->id;
             $task->save();
             $file = $req->input('pdf');
-
             foreach ($file as $files){
                 $newFile = new Files();
                 $newFile->pdf = $files;
@@ -43,7 +48,7 @@ class TaskController extends Controller
             }
             DB::commit();
 
-            return response()->json(['message' => 'task created'], 200);
+            return response()->json(['message' => 'task created'], 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
@@ -65,11 +70,15 @@ class TaskController extends Controller
 
     public function update($id, Request $req)
     {
-        $req->validate([
-            'title' => 'required',
+        $validate = Validator::make($req->all(),[
+            'title' => 'required|unique',
             'description' => 'required',
             'pdf' => 'required'
         ]);
+
+        if ($validate->fails()) {
+            return response()->json(['error' => $validate->errors()], 422);
+        }
 
         DB::beginTransaction();
         try {
@@ -81,11 +90,11 @@ class TaskController extends Controller
             $user = Auth::user();
             $task->title = $req->input('title');
             $task->description = $req->input('description');
-            if ($req->input('completed') != null)
+            if ($req->input('completed'))
             {
                 $task->completed = $req->input('completed');
-                $dataAtual = new DateTime();
-                $task->completed_date = $dataAtual->format('Y-m-d');
+                $data = new DateTime();
+                $task->completed_at = $data->format('Y-m-d');
             } else {
                 $task->completed = false;
             }
