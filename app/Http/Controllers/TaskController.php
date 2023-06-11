@@ -71,9 +71,9 @@ class TaskController extends Controller
     public function update($id, Request $req)
     {
         $validate = Validator::make($req->all(),[
-            'title' => 'required|unique',
+            'title' => 'required|unique:task',
             'description' => 'required',
-            'pdf' => 'required'
+            'pdf.*' => ['max:20000']
         ]);
 
         if ($validate->fails()) {
