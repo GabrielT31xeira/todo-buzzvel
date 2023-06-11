@@ -1,4 +1,5 @@
 # Run the project
+ - Create ``.env`` file and get the content in ``.env.example`` and put in ``.env``
  - Run ``docker compose up --build``
  - Enter laravel container ``docker exec -it <id-container> /bin/bash`` and run ``php artisan migrate`` and ``php artisan db:seed --class=UserSeeder``.
  - Acess routes
