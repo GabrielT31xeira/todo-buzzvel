@@ -18,9 +18,6 @@ COPY . .
 RUN curl -sS https://getcomposer.org/installer | /usr/local/bin/php -- --install-dir=/usr/local/bin --filename=composer
 RUN /usr/local/bin/composer install --no-interaction
 
-# Copy the .env file into the container
-COPY .env.example .env
-
 RUN php artisan key:generate
 
 RUN php artisan config:cache && \
